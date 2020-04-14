@@ -1,2 +1,29 @@
 ---
 # tasks file for nginx
+
+- name: Ensure python OpenSSL dependencies are installed.
+  pip:
+    name: pyOpenSSL
+    state: present
+
+- name: Ensure directory exists for local self-signed TLS certs.
+  file:
+    path: /etc/myssl/nginx
+    state: directory
+
+- name: Generate an OpenSSL private key.
+  openssl_privatekey:
+    path: /etc/myssl/nginx/privkey.pem
+
+- name: Generate an OpenSSL CSR.
+  openssl_csr:
+    path: /etc/ssl/private/nginx.csr
+    privatekey_path: /etc/myssl/nginx/privkey.pem
+    common_name: "nginx"
+
+- name: Generate a Self Signed OpenSSL certificate.
+  openssl_certificate:
+    path: /etc/myssl/nginx/fullchain.pem
+    privatekey_path: /etc/myssl/nginx/privkey.pem
+    csr_path: /etc/ssl/private/nginx.csr
+    provider: selfsigned
