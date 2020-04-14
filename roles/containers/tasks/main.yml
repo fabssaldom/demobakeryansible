@@ -1,0 +1,16 @@
+---
+# tasks file for containers
+
+- name: Install Docker.io in Debian/Ubuntu
+  apt:
+    name: docker.io
+    state: present
+    force_apt_get: True
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install Podman and Buildah in Red Hat type OS
+  yum:
+    name: podman,buildah
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"
+
