@@ -1,6 +1,16 @@
 ---
 # tasks file for containers
 
+- name: Install Docker Python SDK
+  pip:
+    name: docker
+    state: present
+
+- name: Create Mountpoint for local-persist
+  file:
+    path: /mnt/docker/nginx
+    state: directory
+
 - name: Install Docker.io in Debian/Ubuntu
   apt:
     name: docker.io
@@ -13,4 +23,5 @@
     name: podman,buildah
     state: present
   when: ansible_facts['os_family'] == "RedHat"
+
 

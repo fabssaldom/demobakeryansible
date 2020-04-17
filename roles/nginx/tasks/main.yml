@@ -8,22 +8,50 @@
 
 - name: Ensure directory exists for local self-signed TLS certs.
   file:
-    path: /etc/myssl/nginx
+    path: "/home/{{ theuser }}/nginx"
     state: directory
 
 - name: Generate an OpenSSL private key.
   openssl_privatekey:
-    path: /etc/myssl/nginx/privkey.pem
+    path: "/home/{{ theuser }}/nginx/privkey.pem"
 
 - name: Generate an OpenSSL CSR.
   openssl_csr:
-    path: /etc/ssl/private/nginx.csr
-    privatekey_path: /etc/myssl/nginx/privkey.pem
-    common_name: "nginx"
+    path: "/home/{{ theuser }}/nginx/nginx.csr"
+    privatekey_path: "/home/{{ theuser }}/nginx/privkey.pem"
+    common_name: "Openstack"
 
 - name: Generate a Self Signed OpenSSL certificate.
   openssl_certificate:
-    path: /etc/myssl/nginx/fullchain.pem
-    privatekey_path: /etc/myssl/nginx/privkey.pem
-    csr_path: /etc/ssl/private/nginx.csr
+    path: "/home/{{ theuser }}/nginx/fullchain.pem"
+    privatekey_path: "/home/{{ theuser }}/nginx/privkey.pem"
+    csr_path: "/home/{{ theuser }}/nginx/nginx.csr"
     provider: selfsigned
+
+- name: NGINX should own cert files
+  file:
+    dest: "/home/{{ theuser }}/nginx"
+    owner: "{{ theuser }}"
+    recurse: yes
+
+- name: Create volume
+  docker_volume:
+    name: nginx
+    driver: local
+    driver_options:
+      device: /mnt/docker/nginx
+      o: bind
+  when: ansible_facts['os_family'] == "Debian"
+  ignore_errors: True
+
+- name: Create NGINX container
+  docker_container:
+    name: nginx
+    image: nginx:latest
+    restart_policy: always
+    ports:
+      - 8080:80
+    volumes:
+      - nginx:/etc/nginx:rw
+  when: ansible_facts['os_family'] == "Debian"
+
