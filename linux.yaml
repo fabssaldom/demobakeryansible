@@ -23,7 +23,5 @@
   roles:
     - roles/swmanagement
     - roles/containers
-      when: with_containers
     - roles/nginx
-      when: with_nginx
 

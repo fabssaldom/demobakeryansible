@@ -1,6 +1,9 @@
 ---
 # tasks file for nginx
 
+- meta: end_play
+  when: not with_nginx
+
 - name: Ensure python OpenSSL dependencies are installed.
   pip:
     name: pyOpenSSL
