@@ -7,13 +7,14 @@
 
 # Prepare CentOS based Linux hosts
 - hosts: linux
-  user: debian
+  #user: debian
+  user: fedora
   become: yes
   vars:
     with_proxy: false
-    with_podman: false
+    with_containers: true
     with_nginx: false
-    theuser: "debian"
+    theuser: "fedora"
   environment:
 #    HTTP_PROXY: http://proxy.example.com:3128
 #    https_proxy: http://proxy.example.com:3128
@@ -22,5 +23,7 @@
   roles:
     - roles/swmanagement
     - roles/containers
+      when: with_containers
     - roles/nginx
+      when: with_nginx
 

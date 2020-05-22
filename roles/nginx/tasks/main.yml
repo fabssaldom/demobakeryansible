@@ -11,6 +11,16 @@
     path: "/home/{{ theuser }}/nginx"
     state: directory
 
+- name: Set correct SELinux fcontext
+  sefcontext:
+    target: "{{ nhome }}{{ forsef }}"
+    setype: container_file_t
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"
+  file:
+    path: "/home/{{ theuser }}/nginx"
+    state: directory
+
 - name: Generate an OpenSSL private key.
   openssl_privatekey:
     path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
@@ -75,31 +85,15 @@
   when: ansible_facts['os_family'] == "Debian"
 
 - name: Create NGINX container
-  shell:
-    name: nginx
-    image: nginx:latest
-    restart_policy: always
-    ports:
-      - 8080:80
-    volumes:
-      - nginx:/etc/nginx:rw
+  shell: podman run -d --name mynginx --rm -v /home/{{ theuser }}/nginx:/etc/nginx -p 8080:80 -p 9443:9443 docker.io/nginx/nginx:latest
   when: ansible_facts['os_family'] == "RedHat"
 
-- name: Configure NGINX
+- name: Configure NGINX for Red Hat type OS
   unarchive:
     src: nginx.tgz
-    dest: /var/lib/docker/volumes/nginx/_data/
+    dest: "/home/{{ theuser }}/nginx/"
   when: ansible_facts['os_family'] == "RedHat"
 
 - name: Restart NGINX container
-  docker_container:
-    name: nginx
-    image: nginx:latest
-    state: started
-    restart: yes
-    ports:
-      - 8080:80
-      - 9443:9443
-    volumes:
-      - nginx:/etc/nginx:rw
+  shell: podman stop mynginx && podman start mynginx
   when: ansible_facts['os_family'] == "RedHat"
