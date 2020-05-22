@@ -40,4 +40,6 @@
     state: present
   when: ansible_facts['os_family'] == "RedHat"
 
-
+- name: Restore fcontext settings
+  shell: restorecon -R -v /mnt/podman
+  when: ansible_facts['os_family'] == "RedHat"
