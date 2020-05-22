@@ -13,19 +13,19 @@
 
 - name: Generate an OpenSSL private key.
   openssl_privatekey:
-    path: "/home/{{ theuser }}/nginx/privkey.pem"
+    path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
 
 - name: Generate an OpenSSL CSR.
   openssl_csr:
-    path: "/home/{{ theuser }}/nginx/nginx.csr"
-    privatekey_path: "/home/{{ theuser }}/nginx/privkey.pem"
+    path: "/home/{{ theuser }}/nginx/{{ csrfname }}"
+    privatekey_path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
     common_name: "Openstack"
 
 - name: Generate a Self Signed OpenSSL certificate.
   openssl_certificate:
-    path: "/home/{{ theuser }}/nginx/fullchain.pem"
-    privatekey_path: "/home/{{ theuser }}/nginx/privkey.pem"
-    csr_path: "/home/{{ theuser }}/nginx/nginx.csr"
+    path: "/home/{{ theuser }}/nginx/{{ certfname }}"
+    privatekey_path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
+    csr_path: "/home/{{ theuser }}/nginx/{{ csrfname }} "
     provider: selfsigned
 
 - name: NGINX should own cert files
@@ -59,6 +59,7 @@
   unarchive:
     src: nginx.tgz
     dest: /var/lib/docker/volumes/nginx/_data/
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Restart NGINX container
   docker_container:
@@ -72,3 +73,33 @@
     volumes:
       - nginx:/etc/nginx:rw
   when: ansible_facts['os_family'] == "Debian"
+
+- name: Create NGINX container
+  shell:
+    name: nginx
+    image: nginx:latest
+    restart_policy: always
+    ports:
+      - 8080:80
+    volumes:
+      - nginx:/etc/nginx:rw
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Configure NGINX
+  unarchive:
+    src: nginx.tgz
+    dest: /var/lib/docker/volumes/nginx/_data/
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Restart NGINX container
+  docker_container:
+    name: nginx
+    image: nginx:latest
+    state: started
+    restart: yes
+    ports:
+      - 8080:80
+      - 9443:9443
+    volumes:
+      - nginx:/etc/nginx:rw
+  when: ansible_facts['os_family'] == "RedHat"
