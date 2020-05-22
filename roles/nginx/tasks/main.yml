@@ -16,13 +16,13 @@
 
 - name: Set correct SELinux fcontext
   sefcontext:
-    target: "{{ nhome }}{{ forsef }}"
+    target: "{{ target_dir }}"
     setype: container_file_t
     state: present
   when: ansible_facts['os_family'] == "RedHat"
-  file:
-    path: "/home/{{ theuser }}/nginx"
-    state: directory
+
+- name: Apply new SELinux file context to filesystem
+  command: "restorecon -irv {{ target_dir }}"
 
 - name: Generate an OpenSSL private key.
   openssl_privatekey:

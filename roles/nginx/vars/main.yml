@@ -1,9 +1,7 @@
 ---
 # vars file for nginx
 
-- vars: 
+#- vars: 
     certfname: fullchain.pem
     keyfname: privkey.pem
     csrfname: nginx.csr
-    forsef: 'nginx(/.*)?'
-    nhome: "/home/{{ theuser }}/"
