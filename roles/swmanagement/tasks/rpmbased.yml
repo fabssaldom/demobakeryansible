@@ -8,7 +8,7 @@
 
 - name: Install Git, tcpdump, nc,curl, wget, epel-release, python-setuptools and vim (Red Hat | CentOS)
   yum:
-    name: curl,wget,vim,epel-release,git,nmap-ncat,tcpdump,python-setuptools
+    name: curl,wget,vim,epel-release,git,nmap-ncat,tcpdump,neofetch
     state: present
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
