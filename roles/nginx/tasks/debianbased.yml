@@ -1,0 +1,42 @@
+
+---
+- name: Create volume
+  docker_volume:
+    name: nginx
+    driver: local
+    driver_options:
+      device: /mnt/docker/nginx
+      o: bind
+  when: ansible_facts['os_family'] == "Debian"
+  ignore_errors: True
+
+- name: Create NGINX container
+  docker_container:
+    name: nginx
+    image: nginx:latest
+    restart_policy: always
+    ports:
+      - 8080:80
+      - 9443:9443
+    volumes:
+      - nginx:/etc/nginx:rw
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Configure NGINX
+  unarchive:
+    src: nginx.tgz
+    dest: /var/lib/docker/volumes/nginx/_data/
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Restart NGINX container
+  docker_container:
+    name: nginx
+    image: nginx:latest
+    state: started
+    restart: yes
+    ports:
+      - 8080:80
+      - 9443:9443
+    volumes:
+      - nginx:/etc/nginx:rw
+  when: ansible_facts['os_family'] == "Debian"

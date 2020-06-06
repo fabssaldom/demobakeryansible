@@ -1,0 +1,25 @@
+---
+- name: Set correct SELinux fcontext
+  sefcontext:
+    target: "{{ target_dir }}"
+    setype: container_file_t
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Apply new SELinux file context to filesystem
+  command: "restorecon -irv {{ target_dir }}"
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Create NGINX container
+  shell: podman run -d --name mynginx --rm -v /home/{{ theuser }}/nginx:/etc/nginx -p 8080:80 -p 9443:9443 docker.io/nginx/nginx:latest
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Configure NGINX for Red Hat type OS
+  unarchive:
+    src: nginx.tgz
+    dest: "/home/{{ theuser }}/nginx/"
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Restart NGINX container
+  shell: podman stop mynginx && podman start mynginx
+  when: ansible_facts['os_family'] == "RedHat"
