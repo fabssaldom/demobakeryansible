@@ -13,23 +13,32 @@
   file:
     path: "/home/{{ theuser }}/nginx"
     state: directory
+    mode: 0775
+    owner: "{{ theuser }}"
+    group: "{{ theuser }}"
 
-- name: Generate an OpenSSL private key.
-  openssl_privatekey:
-    path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
+- name: Check NGINX directory
+  command: ls -l "/home/{{ theuser }}/nginx"
 
-- name: Generate an OpenSSL CSR.
-  openssl_csr:
-    path: "/home/{{ theuser }}/nginx/{{ csrfname }}"
-    privatekey_path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
-    common_name: "Openstack"
+#- name: Generate an OpenSSL private key.
+#  openssl_privatekey:
+#    path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
 
-- name: Generate a Self Signed OpenSSL certificate.
-  openssl_certificate:
-    path: "/home/{{ theuser }}/nginx/{{ certfname }}"
-    privatekey_path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
-    csr_path: "/home/{{ theuser }}/nginx/{{ csrfname }} "
-    provider: selfsigned
+#- name: Generate an OpenSSL CSR.
+#  openssl_csr:
+#    path: "/home/{{ theuser }}/nginx/{{ csrfname }}"
+#    privatekey_path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
+#    common_name: "Openstack"
+
+#- name: Check dir
+#  command: ls -l "/home/{{ theuser }}/nginx/"
+
+#- name: Generate a Self Signed OpenSSL certificate.
+#  openssl_certificate:
+#    path: "/home/{{ theuser }}/nginx/{{ certfname }}"
+#    privatekey_path: "/home/{{ theuser }}/nginx/{{ keyfname }}"
+#    csr_path: "/home/{{ theuser }}/nginx/{{ csrfname }} "
+#    provider: selfsigned
 
 - name: NGINX should own cert files
   file:

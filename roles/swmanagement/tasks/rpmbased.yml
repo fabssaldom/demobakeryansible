@@ -8,19 +8,19 @@
 
 - name: Install Git, tcpdump, nc,curl, wget, epel-release, python-setuptools and vim (Red Hat | CentOS)
   yum:
-    name: curl,wget,vim,epel-release,git,nmap-ncat,tcpdump,firewalld
+    name: python3,curl,wget,vim,epel-release,git,nmap-ncat,tcpdump,firewalld,python3,python-setuptools
     state: present
   when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
 
-- name: Install EPEL packages
-  yum:
-    name: neofetch
-    state: present
-  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+#- name: Install Neofetch
+#  yum:
+#    name: neofetch
+#    state: present
+#  when: ansible_distribution == "Fedora"
 
 - name: Install Git, tcpdump, nc,curl, wget, python-setuptools and vim (Fedora)
   yum:
-    name: curl,wget,vim,git,nmap-ncat,tcpdump,python-setuptools,neofetch
+    name: neofetch,curl,wget,vim,git,nmap-ncat,tcpdump,python-setuptools,neofetch, python-virtualenv
     state: present
   when: ansible_distribution == "Fedora"
 

@@ -1,17 +1,18 @@
 ---
 - name: Set correct SELinux fcontext
   sefcontext:
-    target: "{{ target_dir }}"
+    target: "{{ target_dir }}(/.*)?"
     setype: container_file_t
     state: present
   when: ansible_facts['os_family'] == "RedHat"
 
 - name: Apply new SELinux file context to filesystem
-  command: "restorecon -irv {{ target_dir }}"
+  command: "restorecon -R -v {{ target_dir }}"
   when: ansible_facts['os_family'] == "RedHat"
 
 - name: Create NGINX container
-  shell: podman run -d --name mynginx --rm -v /home/{{ theuser }}/nginx:/etc/nginx -p 8080:80 -p 9443:9443 docker.io/nginx/nginx:latest
+  shell: podman run -d --name mynginx -v /mnt/podman/nginx:/etc/nginx -p 8181:80 -p 9443:9443 docker.io/library/nginx:latest
+#  become: "{{ theuser }}"
   when: ansible_facts['os_family'] == "RedHat"
 
 - name: Configure NGINX for Red Hat type OS

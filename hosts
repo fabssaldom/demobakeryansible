@@ -1,6 +1,8 @@
 [linux]
 #192.168.56.110 ansible_ssh_private_key_file=~/ckey
 #192.168.1.180 ansible_ssh_private_key_file=~/ckey
-#192.168.1.186 ansible_ssh_private_key_file=~/ckey
-159.69.9.206 ansible_ssh_private_key_file=~/ckey
+192.168.1.183 ansible_ssh_private_key_file=~/ckey
+#159.69.9.206 ansible_ssh_private_key_file=~/ckey
+52.117.12.243 ansible_ssh_private_key_file=~/ckey
+
 
