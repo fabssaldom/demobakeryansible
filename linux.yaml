@@ -5,16 +5,14 @@
 #
 # ***************************************
 
-# Prepare CentOS based Linux hosts
+# Prepare RHEL based Linux hosts
 - hosts: linux
-  #user: debian
-  user: root
-  become: no
+  user: fsalaman
+  become: yes
   vars:
     with_proxy: false
-    with_containers: true
+    with_containers: false
     with_nginx: false
-    with_nagios: false
     theuser: "root"
   environment:
 #    HTTP_PROXY: http://proxy.example.com:3128
@@ -23,7 +21,7 @@
 #    HTTPS_PROXY: http://proxy.example.com:3128
   roles:
     - roles/swmanagement
-    - roles/containers
+    #- roles/containers
     - roles/nginx
-    #- roles/nagios
+    
 
