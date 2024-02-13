@@ -6,8 +6,9 @@
 # ***************************************
 
 # Prepare RHEL based Linux hosts
-- hosts: linux
-  user: fsalaman
+- hosts: localhost
+  connection: local
+  #user: google
   become: yes
   vars:
     with_proxy: false
