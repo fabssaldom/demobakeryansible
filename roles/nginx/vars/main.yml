@@ -1,9 +1,0 @@
----
-# vars file for nginx
-
-#- vars: 
-    certfname: fullchain.pem
-    keyfname: privkey.pem
-    csrfname: nginx.csr
-    target_dir: "/home/{{ theuser }}/nginx"
-    

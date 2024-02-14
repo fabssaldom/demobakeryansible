@@ -13,25 +13,6 @@
     - { src: 'issue.net', dest: '/etc/issue.net' }
     - { src: 'motd', dest: '/etc/motd' }
 
-- name: Update APT
-  apt:
-    update_cache: yes
-  when: ansible_facts['os_family'] == "Debian"
-
-- name: Update OS
-  apt:
-    name: '*'
-    state: latest
-    force_apt_get: True
-  when: ansible_facts['os_family'] == "Debian"
-
-- name: Install curl, wget, vim, tmux,nc, git, Python
-  apt:
-    name: curl,wget,vim,tmux,netcat-openbsd,git,python3,python-pip
-    state: present
-    force_apt_get: True
-  when: ansible_facts['os_family'] == "Debian"
-
 - name: Process RPM based distros
   include_tasks: 
     file: rpmbased.yml
