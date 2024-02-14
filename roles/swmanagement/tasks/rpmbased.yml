@@ -25,6 +25,6 @@
   when: ansible_distribution == "Fedora"
 
 - name: Enable SELinux
-  selinux:
+  ansible.posix.selinux:
     policy: targeted
     state: enforcing

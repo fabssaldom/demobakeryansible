@@ -32,5 +32,7 @@
     force_apt_get: True
   when: ansible_facts['os_family'] == "Debian"
 
-- include: rpmbased.yml
+- name: Process RPM based distros
+  include_tasks: 
+    file: rpmbased.yml
   when: ansible_facts['os_family'] == "RedHat"
