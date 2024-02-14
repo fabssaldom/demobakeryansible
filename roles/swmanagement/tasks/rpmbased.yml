@@ -23,8 +23,3 @@
     name: neofetch,curl,wget,vim,nmap-ncat,neofetch,python-virtualenv
     state: present
   when: ansible_distribution == "Fedora"
-
-- name: Enable SELinux
-  ansible.posix.selinux:
-    policy: targeted
-    state: enforcing
